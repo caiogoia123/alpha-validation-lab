@@ -1,0 +1,28 @@
+# Dados e artefatos pesados (regeneráveis pelo pipeline)
+data/*.db
+data/*.json
+models/*.json
+models/*.pkl
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Ambientes
+.venv/
+venv/
+.env
+
+# Ferramentas
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+
+# Notebooks: versionar sem outputs pesados (use nbstripout/jupytext se preferir)

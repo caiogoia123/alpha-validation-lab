@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ symbol }} · Previsor de Direção</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      margin: 0; background: #0e1117; color: #e6edf3;
+    }
+    header { padding: 24px; border-bottom: 1px solid #21262d; }
+    h1 { margin: 0; font-size: 20px; }
+    .sub { color: #8b949e; font-size: 13px; margin-top: 4px; }
+    main { padding: 24px; max-width: 980px; margin: 0 auto; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .card {
+      background: #161b22; border: 1px solid #21262d; border-radius: 10px;
+      padding: 20px;
+    }
+    .card h2 { margin: 0 0 12px; font-size: 14px; color: #8b949e;
+      text-transform: uppercase; letter-spacing: .04em; }
+    .big { font-size: 34px; font-weight: 700; }
+    .up { color: #3fb950; } .down { color: #f85149; }
+    .bar { height: 14px; border-radius: 7px; background: #f85149;
+      overflow: hidden; margin-top: 12px; }
+    .bar > div { height: 100%; background: #3fb950; }
+    .row { display: flex; justify-content: space-between; font-size: 13px;
+      color: #8b949e; margin-top: 8px; }
+    button {
+      background: #238636; color: white; border: none; padding: 10px 16px;
+      border-radius: 6px; font-size: 14px; cursor: pointer; margin-right: 8px;
+    }
+    button.secondary { background: #30363d; }
+    button:disabled { opacity: .5; cursor: default; }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px;
+      font-size: 13px; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid #21262d; }
+    th { color: #8b949e; font-weight: 500; }
+    .pill { padding: 2px 8px; border-radius: 12px; font-size: 12px; }
+    .pill.ok { background: rgba(63,185,80,.15); color: #3fb950; }
+    .pill.bad { background: rgba(248,81,73,.15); color: #f85149; }
+    .pill.wait { background: rgba(139,148,158,.15); color: #8b949e; }
+    .actions { margin: 20px 0; }
+    .err { color: #f85149; font-size: 13px; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>{{ symbol }} · Previsão de direção (+{{ horizon }} min)</h1>
+    <div class="sub">Modelo XGBoost sobre RSI, MACD, EMA9 e EMA21 · dados Binance</div>
+  </header>
+
+  <main>
+    <div class="actions">
+      <button id="btn-predict">Gerar previsão agora</button>
+      <button id="btn-evaluate" class="secondary">Verificar acertos</button>
+      <span id="err" class="err"></span>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Previsão atual</h2>
+        <div id="direction" class="big">—</div>
+        <div class="bar"><div id="bar-up" style="width:0%"></div></div>
+        <div class="row">
+          <span>↑ Alta: <b id="prob-up">—</b></span>
+          <span>↓ Baixa: <b id="prob-down">—</b></span>
+        </div>
+        <div class="row"><span>Preço base:</span><span id="price">—</span></div>
+        <div class="row"><span>Emitida em:</span><span id="ts">—</span></div>
+      </div>
+
+      <div class="card">
+        <h2>Taxa de acerto</h2>
+        <div id="accuracy" class="big">—</div>
+        <div class="row"><span>Acertos:</span><span id="hits">—</span></div>
+        <div class="row"><span>Avaliadas:</span><span id="evaluated">—</span></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <h2>Últimas previsões</h2>
+      <table>
+        <thead>
+          <tr><th>Quando</th><th>Direção</th><th>Prob. alta</th>
+              <th>Preço base</th><th>Preço alvo</th><th>Resultado</th></tr>
+        </thead>
+        <tbody id="history"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>
+    const fmtPct = x => (x * 100).toFixed(1) + "%";
+    const fmtTime = ms => new Date(ms).toLocaleString("pt-BR");
+
+    function setError(msg) { document.getElementById("err").textContent = msg || ""; }
+
+    function renderPrediction(p) {
+      const dir = document.getElementById("direction");
+      dir.textContent = p.direction;
+      dir.className = "big " + (p.direction === "ALTA" ? "up" : "down");
+      document.getElementById("prob-up").textContent = fmtPct(p.prob_up);
+      document.getElementById("prob-down").textContent = fmtPct(p.prob_down);
+      document.getElementById("bar-up").style.width = fmtPct(p.prob_up);
+      document.getElementById("price").textContent =
+        "$" + p.price_at_prediction.toLocaleString("en-US");
+      document.getElementById("ts").textContent = fmtTime(Date.now());
+    }
+
+    function renderStats(data) {
+      const s = data.stats;
+      document.getElementById("accuracy").textContent =
+        s.evaluated ? fmtPct(s.accuracy) : "—";
+      document.getElementById("hits").textContent = s.hits;
+      document.getElementById("evaluated").textContent = s.evaluated;
+
+      const tbody = document.getElementById("history");
+      tbody.innerHTML = "";
+      for (const r of data.recent) {
+        const tr = document.createElement("tr");
+        let result;
+        if (!r.evaluated) result = '<span class="pill wait">aguardando</span>';
+        else if (r.correct) result = '<span class="pill ok">acerto</span>';
+        else result = '<span class="pill bad">erro</span>';
+        const dirClass = r.direction === "ALTA" ? "up" : "down";
+        tr.innerHTML =
+          `<td>${fmtTime(r.created_at)}</td>` +
+          `<td class="${dirClass}">${r.direction}</td>` +
+          `<td>${fmtPct(r.prob_up)}</td>` +
+          `<td>$${r.price_at_prediction.toLocaleString("en-US")}</td>` +
+          `<td>${r.price_at_target ? "$" + r.price_at_target.toLocaleString("en-US") : "—"}</td>` +
+          `<td>${result}</td>`;
+        tbody.appendChild(tr);
+      }
+    }
+
+    async function refreshStats() {
+      const res = await fetch("/api/stats");
+      const data = await res.json();
+      if (data.ok) renderStats(data);
+    }
+
+    async function predict() {
+      const btn = document.getElementById("btn-predict");
+      btn.disabled = true; setError("");
+      try {
+        const res = await fetch("/api/predict");
+        const data = await res.json();
+        if (data.ok) { renderPrediction(data.prediction); await refreshStats(); }
+        else setError(data.error || "Falha ao prever.");
+      } catch (e) { setError(String(e)); }
+      finally { btn.disabled = false; }
+    }
+
+    async function evaluate() {
+      const btn = document.getElementById("btn-evaluate");
+      btn.disabled = true; setError("");
+      try {
+        await fetch("/api/evaluate");
+        await refreshStats();
+      } catch (e) { setError(String(e)); }
+      finally { btn.disabled = false; }
+    }
+
+    document.getElementById("btn-predict").addEventListener("click", predict);
+    document.getElementById("btn-evaluate").addEventListener("click", evaluate);
+
+    // Carrega histórico ao abrir e atualiza a cada 30s.
+    refreshStats();
+    setInterval(refreshStats, 30000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+# Normaliza finais de linha: LF no repositório, nativo no checkout.
+* text=auto
+
+# Binários e artefatos (sem diff/merge textual).
+*.png binary
+*.ipynb -text
+*.db binary
