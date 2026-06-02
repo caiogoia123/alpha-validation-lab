@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this research framework, please cite it as below."
+title: "Alpha Validation Lab: Predictability ≠ Profitability"
+abstract: >-
+  A statistical and economic validation framework for crypto market hypotheses.
+  Using BTC/USDT 1-minute data, it demonstrates that price direction is
+  statistically indistinguishable from chance after costs, that volatility is
+  strongly and stably predictable (AUC ~0.79), and that statistical
+  predictability does not imply economic profitability.
+authors:
+  - family-names: "G."
+    given-names: "Caio"
+version: 0.2.0
+date-released: "2026-06-01"
+license: MIT
+keywords:
+  - quantitative research
+  - backtesting
+  - walk-forward validation
+  - volatility forecasting
+  - market efficiency
