@@ -197,4 +197,4 @@ MIT — uso de pesquisa/educacional. **Não é recomendação financeira.** Ver
 **Caio Goia** — Analytics Engineer · BI Analyst. Construo pipelines de dados e transformo dados em decisão.
 
 [![GitHub](https://img.shields.io/badge/GitHub-caiogoia123-181717?style=flat&logo=github&logoColor=white)](https://github.com/caiogoia123)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Caio%20Goia-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://linkedin.com/in/caiogoia)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Caio%20Goia-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/caio-goia/)

@@ -194,4 +194,4 @@ and [CITATION.cff](CITATION.cff).
 **Caio Goia** — Analytics Engineer · BI Analyst. I build data pipelines and turn data into decisions.
 
 [![GitHub](https://img.shields.io/badge/GitHub-caiogoia123-181717?style=flat&logo=github&logoColor=white)](https://github.com/caiogoia123)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Caio%20Goia-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://linkedin.com/in/caiogoia)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Caio%20Goia-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/caio-goia/)
