@@ -1,8 +1,7 @@
 # Previsibilidade ≠ Lucratividade
 ### Um framework de validação estatística e econômica de hipóteses de mercado — estudo de caso BTC/USDT
 
-![CI](https://img.shields.io/badge/CI-passing-brightgreen)
-![tests](https://img.shields.io/badge/tests-25%20passing-brightgreen)
+[![CI](https://github.com/caiogoia123/alpha-validation-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/caiogoia123/alpha-validation-lab/actions/workflows/ci.yml)
 ![python](https://img.shields.io/badge/python-3.11%2B-blue)
 ![lint](https://img.shields.io/badge/lint-ruff-purple)
 ![license](https://img.shields.io/badge/license-MIT-lightgrey)
@@ -78,6 +77,12 @@ resposta é não.
 perde ~150% para custos, porque o movimento mediano de 5 minutos (~0,05%) é
 **menos da metade do custo de ida-e-volta (~0,12%)**.
 
+![Valor econômico por alvo](reports/target_economic_value.png)
+
+*Quanto de movimento de preço as classes previstas de cada alvo realmente separam,
+vs. o custo de ida-e-volta (linha vermelha tracejada ≈ 0,12%). A direção mal aparece —
+só um sinal de regime em 1 h supera a linha de custo.*
+
 **A volatilidade é previsível — trivialmente.** A volatilidade é o alvo mais
 previsível por larga margem (AUC ≈ 0,79 vs. 0,50 da direção). Mas isso é o efeito
 clássico de *clustering de volatilidade*: sob CV purgada, um baseline de
@@ -89,6 +94,12 @@ persistência de uma linha (`vol_{t+1} ≈ vol_t`, AUC 0,81) **supera** o XGBoos
 remover operações dominadas por custo), mas nunca produz uma estratégia
 lucrativa. O **Deflated Sharpe Ratio nas 12 configurações é 0,00** — o melhor
 resultado é exatamente o esperado ao testar muitas estratégias sem edge real.
+
+![Curva de capital out-of-sample](reports/equity_curve.png)
+
+*O resumo em um gráfico: fora da amostra, o saldo do modelo cai de 10.000 USDT para
+~5.000 ao longo de ~4.200 operações. O edge estatístico é real — e ainda assim negativo
+após os custos.*
 
 ## 5. As armadilhas metodológicas (a parte interessante)
 
@@ -178,3 +189,12 @@ produzir um número.
 
 MIT — uso de pesquisa/educacional. **Não é recomendação financeira.** Ver
 [LICENSE](LICENSE) e [CITATION.cff](CITATION.cff).
+
+---
+
+## Autor
+
+**Caio Goia** — Analytics Engineer · BI Analyst. Construo pipelines de dados e transformo dados em decisão.
+
+[![GitHub](https://img.shields.io/badge/GitHub-caiogoia123-181717?style=flat&logo=github&logoColor=white)](https://github.com/caiogoia123)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Caio%20Goia-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://linkedin.com/in/caiogoia)

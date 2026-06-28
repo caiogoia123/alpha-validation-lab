@@ -1,8 +1,7 @@
 # Predictability ≠ Profitability
 ### A statistical & economic validation framework for crypto market hypotheses — BTC/USDT case study
 
-![CI](https://img.shields.io/badge/CI-passing-brightgreen)
-![tests](https://img.shields.io/badge/tests-25%20passing-brightgreen)
+[![CI](https://github.com/caiogoia123/alpha-validation-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/caiogoia123/alpha-validation-lab/actions/workflows/ci.yml)
 ![python](https://img.shields.io/badge/python-3.11%2B-blue)
 ![lint](https://img.shields.io/badge/lint-ruff-purple)
 ![license](https://img.shields.io/badge/license-MIT-lightgrey)
@@ -78,6 +77,12 @@ directional AUC sits at ≈ 0.50. The only statistically significant edge (51.2%
 loses ~150% to costs because the median 5-minute move (~0.05%) is **less than half
 the round-trip cost (~0.12%)**.
 
+![Economic value by target](reports/target_economic_value.png)
+
+*How much realized price movement each target's predicted classes actually separate,
+vs. the round-trip cost (red dashed line ≈ 0.12%). Direction barely registers — only a
+1-hour regime signal clears the cost line.*
+
 **Volatility is predictable — trivially.** Volatility is the most predictable
 target by a wide margin (AUC ≈ 0.79 vs. 0.50 for direction). But this is the
 textbook *volatility-clustering* effect: under purged CV a one-line persistence
@@ -89,6 +94,11 @@ to trade only high-movement regimes improves profit factor (it removes
 cost-dominated trades) but never produces a profitable strategy. The **Deflated
 Sharpe Ratio across 12 strategy configurations is 0.00** — the best result is
 exactly what you'd expect from testing many strategies with no real edge.
+
+![Out-of-sample equity curve](reports/equity_curve.png)
+
+*The punchline in one chart: out-of-sample, the model's balance bleeds from 10,000 USDT
+to ~5,000 over ~4,200 trades. The statistical edge is real — and still negative after costs.*
 
 ## 5. The methodological catches (the interesting part)
 
@@ -176,3 +186,12 @@ producing a number.
 
 MIT — research/educational use. **Not financial advice.** See [LICENSE](LICENSE)
 and [CITATION.cff](CITATION.cff).
+
+---
+
+## Author
+
+**Caio Goia** — Analytics Engineer · BI Analyst. I build data pipelines and turn data into decisions.
+
+[![GitHub](https://img.shields.io/badge/GitHub-caiogoia123-181717?style=flat&logo=github&logoColor=white)](https://github.com/caiogoia123)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Caio%20Goia-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://linkedin.com/in/caiogoia)
